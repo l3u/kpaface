@@ -114,4 +114,32 @@ void FaceDetector::setMinSize(double minSize)
     m_detectorSettings.minSize = minSize;
 }
 
+linearRegression FaceDetector::calculateLinearRegression(const QList<QPoint>& coordinates)
+{
+    const double n = double(coordinates.size());
+    double sumX;
+    double sumXX;
+    double sumXY;
+    double sumY;
+    double sumYY;
+
+    for (const QPoint& coordinate : coordinates) {
+        const double x = double(coordinate.x());
+        const double y = double(coordinate.y());
+        sumX  += x;
+        sumXX += x * x;
+        sumXY += x * y;
+        sumY  += y;
+        sumYY += y * y;
+    }
+
+    linearRegression result;
+    result.intercept   = (sumY * sumXX - sumX * sumXY) / (n * sumXX - sumX * sumX);
+    result.slope       = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+    result.correlation = (sumXY - sumX * sumY / n)
+                         / std::sqrt((sumXX - (sumX * sumX) / n) * (sumYY - (sumY * sumY) / n));
+
+    return result;
+}
+
 }

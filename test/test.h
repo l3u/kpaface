@@ -35,21 +35,16 @@ class LibkfaceFaceDetector;
 
 namespace kpaface
 {
-class FaceDetector;
-}
 
-struct linearRegression {
-    double slope;
-    double intercept;
-    double correlation;
-};
+class FaceDetector;
+
+}
 
 class test : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    static linearRegression calculateLinearRegression(const QList<QPoint>& coordinates);
     test();
     void loadDirectory(const QString directory);
 

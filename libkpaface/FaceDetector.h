@@ -45,6 +45,7 @@ public:
     void setMinNeighbours(int minNeighbours);
     void enableCannyPruning(bool state);
     void setMinSize(double minSize);
+    linearRegression calculateLinearRegression(const QList<QPoint>& coordinates);
 
 private: // Variables
     DetectorSettings m_detectorSettings;

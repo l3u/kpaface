@@ -27,6 +27,12 @@ struct DetectorSettings {
     double minSize;
 };
 
+struct linearRegression {
+    double slope;
+    double intercept;
+    double correlation;
+};
+
 }
 
 #endif // KPAFACE_STRUCTS_H

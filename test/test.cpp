@@ -157,16 +157,6 @@ test::test()
     m_libkfaceFaceDetector = new LibkfaceFaceDetector;
     m_libkpafaceFaceDetector = new kpaface::FaceDetector;
     m_imageReader = new QImageReader();
-
-    // Test :-)
-    /*
-    QList<QPoint> coordinates;
-    coordinates << QPoint(1, 6) << QPoint(2, 5) << QPoint(6, 3) << QPoint(7, 2);
-    linearRegression testResult = calculateLinearRegression(coordinates);
-    qDebug() << "Intercept  :" << testResult.intercept;
-    qDebug() << "Slope      :" << testResult.slope;
-    qDebug() << "Correlation:" << testResult.correlation;
-    */
 }
 
 void test::chooseDirectory()
@@ -282,32 +272,4 @@ void test::addFrames(const QList<QRect> geometriesList, const QString color)
     for (QRect geometry : geometriesList) {
         new DetectedFace(m_imageDisplay, m_imageDisplay->mapToDisplay(geometry), geometry, color);
     }
-}
-
-linearRegression test::calculateLinearRegression(const QList<QPoint>& coordinates)
-{
-    const double n = double(coordinates.size());
-    double sumX;
-    double sumXX;
-    double sumXY;
-    double sumY;
-    double sumYY;
-
-    for (const QPoint& coordinate : coordinates) {
-        const double x = double(coordinate.x());
-        const double y = double(coordinate.y());
-        sumX  += x;
-        sumXX += x * x;
-        sumXY += x * y;
-        sumY  += y;
-        sumYY += y * y;
-    }
-
-    linearRegression result;
-    result.intercept   = (sumY * sumXX - sumX * sumXY) / (n * sumXX - sumX * sumX);
-    result.slope       = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-    result.correlation = (sumXY - sumX * sumY / n)
-                         / std::sqrt((sumXX - (sumX * sumX) / n) * (sumYY - (sumY * sumY) / n));
-
-    return result;
 }
