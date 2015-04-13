@@ -179,10 +179,10 @@ void test::loadDirectory(const QString directory)
     m_currentFileLabel->setText(QString::fromUtf8("No images"));
     m_currentFile = 0;
 
-    QDir* imagesDirectory = new QDir(directory);
-    QStringList files = imagesDirectory->entryList(QDir::Files
-                                                   | QDir::NoDotAndDotDot
-                                                   | QDir::Readable);
+    QDir imagesDirectory = QDir(directory);
+    QStringList files = imagesDirectory.entryList(QDir::Files
+                                                  | QDir::NoDotAndDotDot
+                                                  | QDir::Readable);
     for (QString fileName : files) {
         QString fullPath = directory + QString::fromUtf8("/") + fileName;
         m_imageReader->setFileName(fullPath);
