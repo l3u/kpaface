@@ -35,6 +35,7 @@ namespace kpaface
 
 // Local classes
 class OpenCVFaceDetector;
+class FlandmarkDetector;
 
 class FaceDetector
 {
@@ -50,6 +51,7 @@ public:
 private: // Variables
     DetectorSettings m_detectorSettings;
     OpenCVFaceDetector* m_openCVFaceDetector;
+    FlandmarkDetector* m_flandmarkDetector;
 };
 
 }

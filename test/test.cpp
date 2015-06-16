@@ -31,6 +31,9 @@
 #include <QTime>
 #include <QFrame>
 
+// Flandmark includes
+#include <Flandmark.h>
+
 // Local includes
 #include "test.h"
 #include "DetectedFace.h"

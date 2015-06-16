@@ -14,28 +14,36 @@
    along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OPENCVFACEDETECTOR_H
-#define OPENCVFACEDETECTOR_H
+#ifndef FLANDMARKDETECTOR_H
+#define FLANDMARKDETECTOR_H
 
 // OpenCV includes
 #include <opencv2/opencv.hpp>
 
-// Local includes
-#include "structs.h"
+// Qt includes
+#include <QRect>
+
+// flandmark includes
+#include <Flandmark.h>
 
 namespace kpaface
 {
 
-class OpenCVFaceDetector
+class FlandmarkDetector
 {
 public:
-    OpenCVFaceDetector(std::string cascade);
-    std::vector<cv::Rect> detectFaces(cv::Mat& image, DetectorSettings& settings);
+    FlandmarkDetector();
+    void setImage(cv::Mat& cvImage);
+    void detectLandmarks(QRect& boundingBox);
+
+private: // Functions
+    cimg_library::CImg<unsigned char>* cvImageToCImgImage(cv::Mat& cvImage);
 
 private: // Variables
-    cv::CascadeClassifier m_faceCascade;
+    clandmark::Flandmark* m_flandmark;
+    cimg_library::CImg<unsigned char>* m_image;
 };
 
 }
 
-#endif // OPENCVFACEDETECTOR_H
+#endif // FLANDMARKDETECTOR_H

@@ -22,6 +22,7 @@
 // Local includes
 #include "FaceDetector.h"
 #include "OpenCVFaceDetector.h"
+#include "FlandmarkDetector.h"
 
 namespace kpaface
 {
@@ -52,6 +53,9 @@ FaceDetector::FaceDetector()
     m_detectorSettings.minNeighbours = 2;
     m_detectorSettings.flags         = 0;
     m_detectorSettings.minSize       = 0.2;
+
+    // Setup the landmark detector
+    m_flandmarkDetector = new FlandmarkDetector;
 }
 
 QList<QRect> FaceDetector::detect(QImage image)
@@ -85,6 +89,11 @@ QList<QRect> FaceDetector::detect(QImage image)
     for (std::vector<cv::Rect>::const_iterator it = faceCandidates.begin();
          it != faceCandidates.end(); it++) {
         convertedFaceCandidates << QRect(it->x, it->y, it->width, it->height);
+    }
+
+    m_flandmarkDetector->setImage(cvImage);
+    for (QRect faceCandidate : convertedFaceCandidates) {
+        m_flandmarkDetector->detectLandmarks(faceCandidate);
     }
 
     return convertedFaceCandidates;
