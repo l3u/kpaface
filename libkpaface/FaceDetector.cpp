@@ -24,6 +24,8 @@
 #include "OpenCVFaceDetector.h"
 #include "FlandmarkDetector.h"
 
+#include <opencv2/highgui/highgui.hpp>
+
 namespace kpaface
 {
 
@@ -64,18 +66,26 @@ QList<QRect> FaceDetector::detect(QImage image)
 
     cv::Mat cvImage;
 
+    cv::Mat originalImage;
+
     switch (image.format()) {
     case QImage::Format_RGB32:
     case QImage::Format_ARGB32:
     case QImage::Format_ARGB32_Premultiplied:
         cvImage = cv::Mat(image.height(), image.width(),
                           CV_8UC4, image.scanLine(0), image.bytesPerLine());
+
+        originalImage = cvImage;
+
         cvtColor(cvImage, cvImage, CV_RGBA2GRAY);
         break;
     default:
         image = image.convertToFormat(QImage::Format_RGB888);
         cvImage = cv::Mat(image.height(), image.width(),
                           CV_8UC3, image.scanLine(0), image.bytesPerLine());
+
+        originalImage = cvImage;
+
         cvtColor(cvImage, cvImage, CV_RGB2GRAY);
     }
 
@@ -93,8 +103,12 @@ QList<QRect> FaceDetector::detect(QImage image)
 
     m_flandmarkDetector->setImage(cvImage);
     for (QRect faceCandidate : convertedFaceCandidates) {
-        m_flandmarkDetector->detectLandmarks(faceCandidate);
+        for (QPoint landmark : m_flandmarkDetector->detectLandmarks(faceCandidate)) {
+            cv::circle(originalImage, cv::Point(landmark.x(), landmark.y()), 10, cv::Scalar(0, 0, 255), -1);
+        }
     }
+    cv::namedWindow("WAT", CV_WINDOW_KEEPRATIO);
+    cv::imshow("WAT", originalImage);
 
     return convertedFaceCandidates;
 }

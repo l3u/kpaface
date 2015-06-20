@@ -17,8 +17,7 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Kface REQUIRED)
 
-find_package(clandmark REQUIRED)
-find_package(flandmark REQUIRED)
+find_package(CLandmark REQUIRED)
 include_directories(${FLANDMARK_INCLUDE_DIRS} ${CLANDMARK_INCLUDE_DIRS})
 
 include_directories(
@@ -35,7 +34,7 @@ set(kpaface_SRCS
 add_library(kpaface SHARED ${kpaface_SRCS})
 target_link_libraries(kpaface ${QT_LIBRARIES})
 target_link_libraries(kpaface ${OpenCV_LIBS})
-target_link_libraries(kpaface ${FLANDMARK_LIBRARIES} ${CLANDMARK_LIBRARIES})
+target_link_libraries(kpaface CLandmark::clandmark CLandmark::flandmark)
 
 set(test_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/test/main.cpp

@@ -22,6 +22,7 @@
 #include <CSparseLBPFeatures.h>
 
 // Local includes
+#define DOUBLE_PRECISION 1
 #include "FlandmarkDetector.h"
 
 namespace kpaface
@@ -29,7 +30,7 @@ namespace kpaface
 
 FlandmarkDetector::FlandmarkDetector()
 {
-    m_flandmark = clandmark::Flandmark::getInstanceOf("/usr/clandmark/models/flandmark_model.xml");
+    m_flandmark = clandmark::Flandmark::getInstanceOf("/home/tobias/tmp/git/clandmark/data/flandmark_model.xml");
 
     clandmark::CFeaturePool* featurePool = new clandmark::CFeaturePool(
         m_flandmark->getBaseWindowSize()[0],
@@ -63,7 +64,7 @@ void FlandmarkDetector::setImage(cv::Mat& cvImage)
     m_image = cvImageToCImgImage(cvImage);
 }
 
-void FlandmarkDetector::detectLandmarks(QRect& boundingBox)
+QList<QPoint> FlandmarkDetector::detectLandmarks(QRect& boundingBox)
 {
     int bbox[8];
     bbox[0] = boundingBox.left();
@@ -75,9 +76,26 @@ void FlandmarkDetector::detectLandmarks(QRect& boundingBox)
     bbox[6] = boundingBox.left();
     bbox[7] = boundingBox.top() + boundingBox.height();
 
-    // The linker fails as soon as I try to do this:
-    //m_flandmark->detect_optimized(m_image, bbox);
-    //clandmark::fl_double_t* landmarks = m_flandmark->getLandmarks();
+    m_flandmark->detect_optimized(m_image, bbox);
+    clandmark::fl_double_t* landmarks = m_flandmark->getLandmarks();
+
+    QList<int> xValues;
+    QList<int> yValues;
+
+    for (int i = 0; i < 2 * m_flandmark->getLandmarksCount(); i += 2) {
+        xValues.insert(i / 2, int(landmarks[i]));
+    }
+
+    for (int i = 1; i < 2 * m_flandmark->getLandmarksCount(); i += 2) {
+        yValues.insert((i - 1) / 2, int(landmarks[i]));
+    }
+
+    QList<QPoint> convertedLandmarks;
+    for (int i = 0; i < xValues.size(); i++) {
+        convertedLandmarks << QPoint(xValues[i], yValues[i]);
+    }
+
+    return convertedLandmarks;
 }
 
 }
