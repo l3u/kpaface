@@ -35,13 +35,13 @@
 #include <Flandmark.h>
 
 // Local includes
-#include "test.h"
+#include "demo.h"
 #include "DetectedFace.h"
 #include "LibkfaceFaceDetector.h"
 #include "libkpaface/FaceDetector.h"
 #include "ImageDisplay.h"
 
-test::test()
+demo::demo()
 {
     QWidget* mainWidget = new QWidget(this);
     QVBoxLayout* mainLayout = new QVBoxLayout(mainWidget);
@@ -162,7 +162,7 @@ test::test()
     m_imageReader = new QImageReader();
 }
 
-void test::chooseDirectory()
+void demo::chooseDirectory()
 {
     QString directory = QFileDialog::getExistingDirectory(this,
         QString::fromUtf8("Choose directory to browse"),
@@ -175,7 +175,7 @@ void test::chooseDirectory()
     }
 }
 
-void test::loadDirectory(const QString directory)
+void demo::loadDirectory(const QString directory)
 {
     m_imageDisplay->setImage(QImage());
     m_files.clear();
@@ -208,7 +208,7 @@ void test::loadDirectory(const QString directory)
     }
 }
 
-void test::previousImage()
+void demo::previousImage()
 {
     if (m_currentFile == 0) {
         return;
@@ -218,7 +218,7 @@ void test::previousImage()
     setImage();
 }
 
-void test::nextImage()
+void demo::nextImage()
 {
     if (m_currentFile == m_files.count() - 1) {
         return;
@@ -228,7 +228,7 @@ void test::nextImage()
     setImage();
 }
 
-void test::setImage()
+void demo::setImage()
 {
     m_previousImage->setEnabled(m_currentFile > 0);
     m_nextImage->setEnabled(!(m_currentFile == m_files.count() - 1));
@@ -238,7 +238,7 @@ void test::setImage()
     m_imageDisplay->setImage(QImage(m_files[m_currentFile]));
 }
 
-void test::libkfaceDetect()
+void demo::libkfaceDetect()
 {
     QTime time;
     time.start();
@@ -250,7 +250,7 @@ void test::libkfaceDetect()
     m_libkfaceDuration->setText(QString::fromUtf8("Detection took %1 ms").arg(time.elapsed()));
 }
 
-void test::opencvDetect()
+void demo::opencvDetect()
 {
     QTime time;
     time.start();
@@ -266,7 +266,7 @@ void test::opencvDetect()
     m_libkpafaceDuration->setText(QString::fromUtf8("Detection took %1 ms").arg(time.elapsed()));
 }
 
-void test::addFrames(const QList<QRect> geometriesList, const QString color)
+void demo::addFrames(const QList<QRect> geometriesList, const QString color)
 {
     for (DetectedFace* frame : m_imageDisplay->findChildren<DetectedFace*>()) {
         frame->deleteLater();

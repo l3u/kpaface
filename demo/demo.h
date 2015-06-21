@@ -14,8 +14,8 @@
    along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef TEST_H
-#define TEST_H
+#ifndef DEMO_H
+#define DEMO_H
 
 // Qt includes
 #include <QMainWindow>
@@ -40,12 +40,12 @@ class FaceDetector;
 
 }
 
-class test : public QMainWindow
+class demo : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    test();
+    demo();
     void loadDirectory(const QString directory);
 
 private slots:
@@ -81,4 +81,4 @@ private: // Variables
     QLabel* m_libkpafaceDuration;
 };
 
-#endif // TEST_H
+#endif // DEMO_H

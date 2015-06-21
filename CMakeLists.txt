@@ -36,15 +36,15 @@ target_link_libraries(kpaface ${QT_LIBRARIES})
 target_link_libraries(kpaface ${OpenCV_LIBS})
 target_link_libraries(kpaface CLandmark::clandmark CLandmark::flandmark)
 
-set(test_SRCS
-    ${CMAKE_CURRENT_SOURCE_DIR}/test/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/test/test.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/test/ImageDisplay.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/test/LibkfaceFaceDetector.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/test/DetectedFace.cpp
+set(demo_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/demo/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/demo/demo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/demo/ImageDisplay.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/demo/LibkfaceFaceDetector.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/demo/DetectedFace.cpp
 )
 
-add_executable(test ${test_SRCS})
-target_link_libraries(test ${QT_LIBRARIES})
-target_link_libraries(test ${KFACE_LIBRARIES})
-target_link_libraries(test kpaface)
+add_executable(demo ${demo_SRCS})
+target_link_libraries(demo ${QT_LIBRARIES})
+target_link_libraries(demo ${KFACE_LIBRARIES})
+target_link_libraries(demo kpaface)

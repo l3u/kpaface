@@ -18,12 +18,12 @@
 #include <QApplication>
 
 // Local includes
-#include "test.h"
+#include "demo.h"
 
 int main(int argc, char* argv[])
 {
     QApplication application(argc, argv);
-    test* mainApplication = new test();
+    demo* mainApplication = new demo();
     mainApplication->show();
 
     if (argc == 2) {
