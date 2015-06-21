@@ -34,10 +34,10 @@ class FlandmarkDetector
 public:
     FlandmarkDetector();
     void setImage(cv::Mat& cvImage);
-    QList<QPoint> detectLandmarks(QRect& boundingBox);
+    QList<QPoint> detectLandmarks(const QRect& boundingBox) const;
 
 private: // Functions
-    cimg_library::CImg<unsigned char>* cvImageToCImgImage(cv::Mat& cvImage);
+    cimg_library::CImg<unsigned char>* cvImageToCImgImage(const cv::Mat& cvImage) const;
 
 private: // Variables
     clandmark::Flandmark* m_flandmark;

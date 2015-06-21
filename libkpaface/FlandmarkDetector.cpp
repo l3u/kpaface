@@ -45,7 +45,7 @@ FlandmarkDetector::FlandmarkDetector()
     m_flandmark->setNFfeaturesPool(featurePool);
 }
 
-cimg_library::CImg<unsigned char>* FlandmarkDetector::cvImageToCImgImage(cv::Mat& cvImage)
+cimg_library::CImg<unsigned char>* FlandmarkDetector::cvImageToCImgImage(const cv::Mat& cvImage) const
 {
     cimg_library::CImg<unsigned char>* convertedImage
         = new cimg_library::CImg<unsigned char>(cvImage.cols, cvImage.rows);
@@ -64,7 +64,7 @@ void FlandmarkDetector::setImage(cv::Mat& cvImage)
     m_image = cvImageToCImgImage(cvImage);
 }
 
-QList<QPoint> FlandmarkDetector::detectLandmarks(QRect& boundingBox)
+QList<QPoint> FlandmarkDetector::detectLandmarks(const QRect& boundingBox) const
 {
     int bbox[8];
     bbox[0] = boundingBox.left();

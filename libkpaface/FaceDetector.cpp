@@ -102,7 +102,7 @@ QList<QRect> FaceDetector::detect(QImage image)
     }
 
     m_flandmarkDetector->setImage(cvImage);
-    for (QRect faceCandidate : convertedFaceCandidates) {
+    for (QRect& faceCandidate : convertedFaceCandidates) {
         for (QPoint landmark : m_flandmarkDetector->detectLandmarks(faceCandidate)) {
             cv::circle(originalImage, cv::Point(landmark.x(), landmark.y()), 10, cv::Scalar(0, 0, 255), -1);
         }
