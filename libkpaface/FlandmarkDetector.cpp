@@ -30,6 +30,7 @@ namespace kpaface
 FlandmarkDetector::FlandmarkDetector()
 {
     m_flandmark = clandmark::Flandmark::getInstanceOf("INDIVIDUAL_FRONTAL_AFLW_SPLIT_1.xml");
+    m_relevantLandmarks << 6 << 7 << 9 << 10 << 13;
 
     clandmark::CFeaturePool* featurePool = new clandmark::CFeaturePool(
         m_flandmark->getBaseWindowSize()[0],
@@ -91,7 +92,9 @@ QList<QPoint> FlandmarkDetector::detectLandmarks(const QRect& boundingBox) const
 
     QList<QPoint> convertedLandmarks;
     for (int i = 0; i < xValues.size(); i++) {
-        convertedLandmarks << QPoint(xValues[i], yValues[i]);
+        if (m_relevantLandmarks.contains(i)) {
+            convertedLandmarks << QPoint(xValues[i], yValues[i]);
+        }
     }
 
     return convertedLandmarks;

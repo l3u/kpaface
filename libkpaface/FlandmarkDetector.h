@@ -42,6 +42,7 @@ private: // Functions
 private: // Variables
     clandmark::Flandmark* m_flandmark;
     cimg_library::CImg<unsigned char>* m_image;
+    QList<int> m_relevantLandmarks;
 };
 
 }
