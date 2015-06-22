@@ -29,7 +29,7 @@ namespace kpaface
 
 FlandmarkDetector::FlandmarkDetector()
 {
-    m_flandmark = clandmark::Flandmark::getInstanceOf("/home/tobias/tmp/git/clandmark/data/flandmark_model.xml");
+    m_flandmark = clandmark::Flandmark::getInstanceOf("/usr/local/share/clandmark/models/flandmark_model.xml");
 
     clandmark::CFeaturePool* featurePool = new clandmark::CFeaturePool(
         m_flandmark->getBaseWindowSize()[0],
