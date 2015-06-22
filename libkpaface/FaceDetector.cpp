@@ -114,22 +114,9 @@ QList<QRect> FaceDetector::detect(QImage image)
         }
 
         // Calculate the face's estimated rotation
-
         QPoint nosePosition = landmarks.takeLast();
-        linearRegression eyesRotation = calculateLinearRegression(landmarks);
+        double angle = std::atan(calculateLinearRegression(landmarks).slope) * 180 / 3.14159265358979323846;
 
-        double angle =
-
-        std::atan(/* adjacent = */
-
-                  /* right point of intersection */
-                  ((eyesRotation.intercept + eyesRotation.slope * faceCandidate.width())
-                  /* minus left point of intersection */
-                   - eyesRotation.intercept)
-
-                  / /* opposite = */ faceCandidate.width())
-
-        * 180 / 3.14159265358979323846 /* convert to degrees */;
 
         cv::Mat facePart;
         originalImage(cv::Rect(faceCandidate.x(),
