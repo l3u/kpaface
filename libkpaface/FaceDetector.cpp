@@ -119,12 +119,15 @@ QList<QRect> FaceDetector::detect(QImage image)
         linearRegression eyesRotation = calculateLinearRegression(landmarks);
 
         double angle =
-        std::atan(/* adjacent: */
-                  ((eyesRotation.intercept + eyesRotation.slope * faceCandidate.width())
-                   /* right point of intersection */
-                   - eyesRotation.intercept /* left point of intersection: */)
 
-                  / faceCandidate.width() /* opposite */)
+        std::atan(/* adjacent = */
+
+                  /* right point of intersection */
+                  ((eyesRotation.intercept + eyesRotation.slope * faceCandidate.width())
+                  /* minus left point of intersection */
+                   - eyesRotation.intercept)
+
+                  / /* opposite = */ faceCandidate.width())
 
         * 180 / 3.14159265358979323846 /* convert to degrees */;
 
