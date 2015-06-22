@@ -102,38 +102,44 @@ QList<QRect> FaceDetector::detect(QImage image)
     }
 
     m_flandmarkDetector->setImage(cvImage);
-    
+
     int i = 0;
     for (QRect& faceCandidate : convertedFaceCandidates) {
-        cv::Mat facePart;
-        
-        originalImage(cv::Rect(faceCandidate.x(),
-                               faceCandidate.y(),
-                               faceCandidate.width(),
-                               faceCandidate.height())).copyTo(facePart);
-        
         QList<QPoint> landmarks = m_flandmarkDetector->detectLandmarks(faceCandidate);
-        
+
         // Normalize the landmarks to the facePart
         for (QPoint& landmark : landmarks) {
             landmark.setX(landmark.x() - faceCandidate.x());
             landmark.setY(landmark.y() - faceCandidate.y());
         }
-        
+
         // Calculate the face's estimated rotation
-        QPoint nosePosition = landmarks.takeLast(); 
+
+        QPoint nosePosition = landmarks.takeLast();
         linearRegression eyesRotation = calculateLinearRegression(landmarks);
-        double angle = std::atan(((eyesRotation.intercept + eyesRotation.slope * facePart.cols)
-                                   - eyesRotation.intercept)
-                                 / facePart.cols)
-                       * 180 / 3.14159265358979323846;
-        
+
+        double angle =
+        std::atan(/* adjacent: */
+                  ((eyesRotation.intercept + eyesRotation.slope * faceCandidate.width())
+                   /* right point of intersection */
+                   - eyesRotation.intercept /* left point of intersection: */)
+
+                  / faceCandidate.width() /* opposite */)
+
+        * 180 / 3.14159265358979323846 /* convert to degrees */;
+
+        cv::Mat facePart;
+        originalImage(cv::Rect(faceCandidate.x(),
+                               faceCandidate.y(),
+                               faceCandidate.width(),
+                               faceCandidate.height())).copyTo(facePart);
+
         cv::Mat rotatedFacePart;
         int len = std::max(facePart.cols, facePart.rows);
         cv::Mat rotationMatrix = cv::getRotationMatrix2D(cv::Point(nosePosition.x(), nosePosition.y()), angle, 1.0);
         cv::warpAffine(facePart, rotatedFacePart, rotationMatrix, cv::Size(len, len));
 
-        
+
         i++;
         const char* imageTitle = std::to_string(i).c_str();
         cv::namedWindow(imageTitle, CV_WINDOW_KEEPRATIO);
