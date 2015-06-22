@@ -160,6 +160,12 @@ demo::demo()
     m_libkfaceFaceDetector = new LibkfaceFaceDetector;
     m_libkpafaceFaceDetector = new kpaface::FaceDetector;
     m_imageReader = new QImageReader();
+    
+    // Only for local testing
+    QDir localDir = QDir(QString::fromUtf8("/home/tobias/tmp/kphotoalbumTest/kpaface"));
+    if (localDir.exists()) {
+        loadDirectory(QString::fromUtf8("/home/tobias/tmp/kphotoalbumTest/kpaface"));
+    }
 }
 
 void demo::chooseDirectory()
