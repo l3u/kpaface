@@ -22,7 +22,6 @@
 #include <CSparseLBPFeatures.h>
 
 // Local includes
-#define DOUBLE_PRECISION 1
 #include "FlandmarkDetector.h"
 
 namespace kpaface
