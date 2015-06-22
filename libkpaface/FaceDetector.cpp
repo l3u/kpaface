@@ -113,9 +113,9 @@ QList<QRect> FaceDetector::detect(QImage image)
             landmark.setY(landmark.y() - faceCandidate.y());
         }
 
-        // Calculate the face's estimated rotation
-        QPoint nosePosition = landmarks.takeLast();
-        double angle = std::atan(calculateLinearRegression(landmarks).slope) * 180 / 3.14159265358979323846;
+        // Calculate the face's estimated rotation using the eye landmarks
+        QPoint nosePosition = landmarks.takeLast(); // Take away the nose coordinates
+        double angle = std::atan(calculateEyeSlope(landmarks)) * 180 / 3.14159265358979323846;
 
 
         cv::Mat facePart;
@@ -163,7 +163,7 @@ void FaceDetector::setMinSize(double minSize)
     m_detectorSettings.minSize = minSize;
 }
 
-linearRegression FaceDetector::calculateLinearRegression(const QList<QPoint>& coordinates)
+double FaceDetector::calculateEyeSlope(const QList<QPoint>& coordinates)
 {
     const double n = double(coordinates.size());
     double sumX;
@@ -182,13 +182,16 @@ linearRegression FaceDetector::calculateLinearRegression(const QList<QPoint>& co
         sumYY += y * y;
     }
 
-    linearRegression result;
-    result.intercept   = (sumY * sumXX - sumX * sumXY) / (n * sumXX - sumX * sumX);
-    result.slope       = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-    result.correlation = (sumXY - sumX * sumY / n)
-                         / std::sqrt((sumXX - (sumX * sumX) / n) * (sumYY - (sumY * sumY) / n));
+    /*
+    Just fyi: a complete linear regression can be calculated from the data.
 
-    return result;
+    The intercept is: (sumY * sumXX - sumX * sumXY) / (n * sumXX - sumX * sumX)
+    The correlation is: (sumXY - sumX * sumY / n)
+                        / std::sqrt((sumXX - (sumX * sumX) / n) * (sumYY - (sumY * sumY) / n))
+
+    ... but we just need the slope here:
+    */
+    return (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
 }
 
 }
