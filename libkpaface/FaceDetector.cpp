@@ -103,10 +103,13 @@ QList<QRect> FaceDetector::detect(QImage image)
 
     m_flandmarkDetector->setImage(cvImage);
 
-    int i = 0;
+    //int i = 0;
     for (QRect& faceCandidate : convertedFaceCandidates) {
         QList<QPoint> landmarks = m_flandmarkDetector->detectLandmarks(faceCandidate);
-
+        for (QPoint& landmark : landmarks) {
+            cv::circle(originalImage, cv::Point(landmark.x(), landmark.y()), 5, cv::Scalar(0, 0, 255), -1);
+        }
+/*
         // Normalize the landmarks to the facePart
         for (QPoint& landmark : landmarks) {
             landmark.setX(landmark.x() - faceCandidate.x());
@@ -134,7 +137,11 @@ QList<QRect> FaceDetector::detect(QImage image)
         const char* imageTitle = std::to_string(i).c_str();
         cv::namedWindow(imageTitle, CV_WINDOW_KEEPRATIO);
         cv::imshow(imageTitle, rotatedFacePart);
+*/
     }
+
+    cv::namedWindow("WAT", CV_WINDOW_KEEPRATIO);
+    cv::imshow("WAT", originalImage);
 
     return convertedFaceCandidates;
 }

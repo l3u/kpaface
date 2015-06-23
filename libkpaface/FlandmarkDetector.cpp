@@ -29,12 +29,34 @@ namespace kpaface
 
 FlandmarkDetector::FlandmarkDetector()
 {
-    m_flandmark = clandmark::Flandmark::getInstanceOf("INDIVIDUAL_FRONTAL_AFLW_SPLIT_1.xml");
-    m_relevantLandmarks << 6 << 7 << 9 << 10 << 13;
+    m_models
+        << std::string("JOINT_MV_AFLW_SPLIT_1_-30deg.xml")
+        << std::string("JOINT_MV_AFLW_SPLIT_1_30deg.xml")
+        << std::string("JOINT_MV_AFLW_SPLIT_1_frontal.xml")
+    ;
+
+    m_modelNames
+        << std::string("Profile -30°")
+        << std::string("Profile +30°")
+        << std::string("Frontal")
+    ;
+
+    m_relevantLandmarks
+        << 6  // canthus-ll
+        << 7  // canthus-lr
+        << 9  // canthus-rl
+        << 10 // canthus-rr
+        << 13 // nose
+        << 20 // chin
+    ;
+
+    for (std::string& model : m_models) {
+        m_flandmarkPool << clandmark::Flandmark::getInstanceOf(model.c_str());
+    }
 
     clandmark::CFeaturePool* featurePool = new clandmark::CFeaturePool(
-        m_flandmark->getBaseWindowSize()[0],
-        m_flandmark->getBaseWindowSize()[1]
+        m_flandmarkPool[0]->getBaseWindowSize()[0],
+        m_flandmarkPool[0]->getBaseWindowSize()[1]
     );
 
     featurePool->addFeaturesToPool(new clandmark::CSparseLBPFeatures(
@@ -42,7 +64,9 @@ FlandmarkDetector::FlandmarkDetector()
         featurePool->getPyramidLevels(), featurePool->getCumulativeWidths())
     );
 
-    m_flandmark->setNFfeaturesPool(featurePool);
+    for (int i = 0; i < m_flandmarkPool.count(); i++) {
+        m_flandmarkPool[i]->setNFfeaturesPool(featurePool);
+    }
 }
 
 cimg_library::CImg<unsigned char>* FlandmarkDetector::cvImageToCImgImage(const cv::Mat& cvImage) const
@@ -76,17 +100,28 @@ QList<QPoint> FlandmarkDetector::detectLandmarks(const QRect& boundingBox) const
     bbox[6] = boundingBox.left();
     bbox[7] = boundingBox.top() + boundingBox.height();
 
-    m_flandmark->detect_optimized(m_image, bbox);
-    clandmark::fl_double_t* landmarks = m_flandmark->getLandmarks();
+    int bestModel;
+    clandmark::fl_double_t lastScore = 0;
+    for (int i = 0; i < m_flandmarkPool.count(); i++) {
+        m_flandmarkPool[i]->detect_optimized(m_image, bbox);
+        clandmark::fl_double_t score = m_flandmarkPool[i]->getScore();
+        if (score > lastScore) {
+            bestModel = i;
+        }
+    }
+
+    qDebug() << "Best model:" << m_modelNames[bestModel].c_str();
+
+    clandmark::fl_double_t* landmarks = m_flandmarkPool[bestModel]->getLandmarks();
 
     QList<int> xValues;
     QList<int> yValues;
 
-    for (int i = 0; i < 2 * m_flandmark->getLandmarksCount(); i += 2) {
+    for (int i = 0; i < 2 * m_flandmarkPool[bestModel]->getLandmarksCount(); i += 2) {
         xValues.insert(i / 2, int(landmarks[i]));
     }
 
-    for (int i = 1; i < 2 * m_flandmark->getLandmarksCount(); i += 2) {
+    for (int i = 1; i < 2 * m_flandmarkPool[bestModel]->getLandmarksCount(); i += 2) {
         yValues.insert((i - 1) / 2, int(landmarks[i]));
     }
 

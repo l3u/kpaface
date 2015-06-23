@@ -15,5 +15,5 @@ target_link_libraries(demo kpaface)
 
 add_custom_command(
     TARGET demo POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/INDIVIDUAL_FRONTAL_AFLW_SPLIT_1.xml ../
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/libkpaface/LandmarkModels ../
 )

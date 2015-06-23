@@ -40,9 +40,12 @@ private: // Functions
     cimg_library::CImg<unsigned char>* cvImageToCImgImage(const cv::Mat& cvImage) const;
 
 private: // Variables
-    clandmark::Flandmark* m_flandmark;
-    cimg_library::CImg<unsigned char>* m_image;
+    QList<std::string> m_models;
+    QList<std::string> m_modelNames;
     QList<int> m_relevantLandmarks;
+    clandmark::Flandmark* m_flandmark;
+    QList<clandmark::Flandmark*> m_flandmarkPool;
+    cimg_library::CImg<unsigned char>* m_image;
 };
 
 }
