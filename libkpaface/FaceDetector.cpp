@@ -106,8 +106,11 @@ QList<QRect> FaceDetector::detect(QImage image)
     //int i = 0;
     for (QRect& faceCandidate : convertedFaceCandidates) {
         QList<QPoint> landmarks = m_flandmarkDetector->detectLandmarks(faceCandidate);
+        int i = -1;
         for (QPoint& landmark : landmarks) {
+            i++;
             cv::circle(originalImage, cv::Point(landmark.x(), landmark.y()), 5, cv::Scalar(0, 0, 255), -1);
+            //cv::putText(originalImage, std::to_string(i).c_str(), cv::Point(landmark.x(), landmark.y()), CV_FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 255));
         }
 /*
         // Normalize the landmarks to the facePart

@@ -41,8 +41,7 @@ private: // Functions
 
 private: // Variables
     QList<std::string> m_models;
-    QList<std::string> m_modelNames;
-    QList<int> m_relevantLandmarks;
+    QList<QList<int>> m_relevantLandmarks;
     clandmark::Flandmark* m_flandmark;
     QList<clandmark::Flandmark*> m_flandmarkPool;
     cimg_library::CImg<unsigned char>* m_image;

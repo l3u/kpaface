@@ -35,13 +35,27 @@ FlandmarkDetector::FlandmarkDetector()
         << std::string("JOINT_MV_AFLW_SPLIT_1_frontal.xml")
     ;
 
-    m_modelNames
-        << std::string("Profile -30°")
-        << std::string("Profile +30°")
-        << std::string("Frontal")
+    QList<int> profileLandmarksMinus30 = QList<int>()
+        << 6  // canthus-ll
+        << 7  // canthus-lr
+        << 9  // canthus-rl
+        << 10 // canthus-rr
+        << 13 // nose
+        << 18 // chin
     ;
+    m_relevantLandmarks << profileLandmarksMinus30;
 
-    m_relevantLandmarks
+    QList<int> profileLandmarksPlus30 = QList<int>()
+        << 6  // canthus-ll
+        << 7  // canthus-lr
+        << 9  // canthus-rl
+        << 10 // canthus-rr
+        << 11 // nose
+        << 18 // chin
+    ;
+    m_relevantLandmarks << profileLandmarksPlus30;
+
+    QList<int> frontalLandmarks = QList<int>()
         << 6  // canthus-ll
         << 7  // canthus-lr
         << 9  // canthus-rl
@@ -49,6 +63,7 @@ FlandmarkDetector::FlandmarkDetector()
         << 13 // nose
         << 20 // chin
     ;
+    m_relevantLandmarks << frontalLandmarks;
 
     for (std::string& model : m_models) {
         m_flandmarkPool << clandmark::Flandmark::getInstanceOf(model.c_str());
@@ -106,11 +121,10 @@ QList<QPoint> FlandmarkDetector::detectLandmarks(const QRect& boundingBox) const
         m_flandmarkPool[i]->detect_optimized(m_image, bbox);
         clandmark::fl_double_t score = m_flandmarkPool[i]->getScore();
         if (score > lastScore) {
+            lastScore = score;
             bestModel = i;
         }
     }
-
-    qDebug() << "Best model:" << m_modelNames[bestModel].c_str();
 
     clandmark::fl_double_t* landmarks = m_flandmarkPool[bestModel]->getLandmarks();
 
@@ -127,7 +141,7 @@ QList<QPoint> FlandmarkDetector::detectLandmarks(const QRect& boundingBox) const
 
     QList<QPoint> convertedLandmarks;
     for (int i = 0; i < xValues.size(); i++) {
-        if (m_relevantLandmarks.contains(i)) {
+        if (m_relevantLandmarks[bestModel].contains(i)) {
             convertedLandmarks << QPoint(xValues[i], yValues[i]);
         }
     }
